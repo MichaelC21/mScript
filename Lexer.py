@@ -7,6 +7,11 @@ _MUL = "MUL"
 _DIV = "DIV" 
 _LBRACKET = "LBRACKET"
 _RBRACKET = "RBRACKET"
+_TRUE = "TRUE"
+_FALSE = "FALSE"
+_IDENTIFIER = "IDENTIFIER" 
+
+
 DIGITS = "1234567890"
 
 class Error:
@@ -69,9 +74,13 @@ class Lexer:
                 continue
             elif self.cur_char in " \t":
                 pass
+            elif self.cur_char.isalpha():
+                res = self.check_string()
+                if not res:
+                    return [], IllegalTokenError(self.cur_char)
+                tokens.append(res)
             else:
-                char = self.cur_char
-                return [], IllegalTokenError(char)
+                return [], IllegalTokenError(self.cur_char)
             self.next()
             
             
@@ -93,6 +102,23 @@ class Lexer:
         if "." in res:
             return Token(_FLOAT, float(res))
         return Token(_INT, int(res))
+    
+    def check_string(self):
+        res = ""
+        while self.cur_char and self.cur_char.isalnum():
+            res += self.cur_char
+            self.next()
+        
+        if self.cur_char != None and not self.cur_char.isalnum() and self.pos:
+            return None    
+        
+        if res.upper() == "TRUE":
+            return Token(_TRUE)
+        elif res.upper() == "FALSE":
+            return Token(_FALSE)
+        return Token(_IDENTIFIER, res)
+        
+                
 
 def tokenize(text):
     lexer = Lexer(text)
