@@ -1,4 +1,5 @@
-
+from Error import *
+from Token import *
 _INT = "INTEGER"
 _FLOAT = "FLOAT"
 _PLUS = "PLUS"
@@ -14,28 +15,7 @@ _IDENTIFIER = "IDENTIFIER"
 
 DIGITS = "1234567890"
 
-class Error:
-    def __init__(self, error, details):
-        self.error = error
-        self.details = details
-    
-    def __str__(self):
-        return self.error + ": " + self.details
 
-class IllegalTokenError(Error):
-    def __init__(self, details):
-        super().__init__("Illegal character input", details)
-
-class Token():
-    def __init__(self, _type, val=None):
-        self.type = _type
-        self.val = val
-    
-    def __repr__(self):
-        res = self.type
-        if self.val:
-            res += ": " + str(self.val)
-        return res
 
 class Lexer:
     def __init__(self, text) -> None:
