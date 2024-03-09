@@ -109,7 +109,7 @@ class Lexer:
             res += self.cur_char
             self.next()
         
-        if self.cur_char != None and not self.cur_char.isalnum() and self.pos:
+        if self.cur_char != None and not self.cur_char.isalnum() and self.cur_char != " ":
             return None    
         
         if res.upper() == "TRUE":
