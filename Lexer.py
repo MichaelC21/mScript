@@ -16,22 +16,33 @@ _IDENTIFIER = "IDENTIFIER"
 DIGITS = "1234567890"
 
 
-
+'''
+    Responsible for handling tokenization on a given string
+'''
 class Lexer:
     def __init__(self, text) -> None:
         self.text = text
         self.pos = 0
         self.cur_char = None
 
-    
+    '''
+        Purpose: Advance to next token
+        Parameters: N/A
+        Returns: N/A
+    '''
     def next(self):
         self.cur_char = None
         if  self.pos < len(self.text): 
             self.cur_char = self.text[self.pos]
         self.pos += 1
     
+    '''
+        Purpose: Main algoirthm for tokenization
+        Parameters: N/A
+        Returns: tokens: a list, Error or None 
+    '''
     def get_tokens(self):
-        tokens = []
+        tokens = [] #Holds all tokens
         self.next()
         while self.cur_char != None:
             if self.cur_char == "+":
@@ -66,12 +77,17 @@ class Lexer:
             
         return tokens, None
     
+    '''
+        Purpose: Handles digits (ints and floats)
+        Parameters: N/A
+        Returns: Token or None
+    '''
     def getDigit(self):
         res = ""
-        decimal_count = 0
+        decimal_count = 0   
         while self.cur_char and (self.cur_char in DIGITS or self.cur_char == "."):
             if self.cur_char == ".":
-                if decimal_count == 1:
+                if decimal_count == 1: #Makes sure no more than 1 decimal in the current number 
                     return None
                 res += self.cur_char
                 decimal_count += 1
@@ -79,10 +95,15 @@ class Lexer:
                 res += self.cur_char  
             self.next()  
 
-        if "." in res:
+        if "." in res:  #Check if float or int
             return Token(_FLOAT, float(res))
         return Token(_INT, int(res))
     
+    '''
+        Purpose: Deals with strings
+        Parameters: N/A
+        Returns: Token
+    '''
     def check_string(self):
         res = ""
         while self.cur_char and self.cur_char.isalnum():
@@ -92,6 +113,7 @@ class Lexer:
         if self.cur_char != None and not self.cur_char.isalnum() and self.cur_char != " ":
             return None    
         
+        #Check what the token the string should be
         if res.upper() == "TRUE":
             return Token(_TRUE)
         elif res.upper() == "FALSE":
@@ -99,7 +121,11 @@ class Lexer:
         return Token(_IDENTIFIER, res)
         
                 
-
+'''
+    Purpose: Entry point for tokenizing 
+    Parameters: text: String
+    Returns: list of tokens
+'''
 def tokenize(text):
     lexer = Lexer(text)
     return lexer.get_tokens()
