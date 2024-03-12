@@ -1,5 +1,6 @@
 import Lexer
 import Parser
+import Interpreter
 def main():
     while True:
         line = input("mScript > ")
@@ -9,6 +10,6 @@ def main():
         if error:
             print(str(error))
         else:
-            print(res)
+            print(Interpreter.run(res))
 
 main()
