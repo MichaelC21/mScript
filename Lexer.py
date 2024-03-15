@@ -11,6 +11,8 @@ _RBRACKET = "RBRACKET"
 _TRUE = "TRUE"
 _FALSE = "FALSE"
 _IDENTIFIER = "IDENTIFIER" 
+_KEYWORD = "KEYWORD"
+_EQUAL = "EQ"
 
 
 DIGITS = "1234567890"
@@ -53,6 +55,8 @@ class Lexer:
                 tokens.append(Token(_MUL))
             elif self.cur_char == "/":
                 tokens.append(Token(_DIV))
+            elif self.cur_char == "=":
+                tokens.append(Token(_EQUAL))
             elif self.cur_char == "(":
                 tokens.append(Token(_LBRACKET))
             elif self.cur_char == ")":
@@ -118,6 +122,8 @@ class Lexer:
             return Token(_TRUE)
         elif res.upper() == "FALSE":
             return Token(_FALSE)
+        elif res.upper() == "LET":
+            return Token(_KEYWORD)
         return Token(_IDENTIFIER, res)
         
                 

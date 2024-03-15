@@ -11,6 +11,8 @@ _RBRACKET = "RBRACKET"
 _TRUE = "TRUE"
 _FALSE = "FALSE"
 _IDENTIFIER = "IDENTIFIER" 
+_KEYWORD = "KEYWORD"
+_EQUAL = "EQ"
 
 '''
 Purpose: Represents a digit (int or float)
@@ -140,6 +142,20 @@ class Parser:
     Returns res: ast, err: None (if no error), Error (if error)
     '''
     def expression(self):
+        if self.cur_token.matches(_KEYWORD, "LET"):
+            self.next()
+            if self.cur_token.type != _IDENTIFIER:
+                return [], IllegalSyntaxError()
+            var_name = self.cur_token
+            self.next()
+            if self.cur_token.type != _EQUAL:
+                return [], IllegalSyntaxError()
+            self.next()
+            expr, err = self.expression()
+            if err:
+                return [], IllegalSyntaxError()
+            return expr
+        
         left, err = self.term()
         if err:
             return [], err
