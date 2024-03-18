@@ -6,6 +6,7 @@ _PLUS = "PLUS"
 _MINUS = "MINUS"
 _MUL = "MUL"
 _DIV = "DIV" 
+_EXP = "EXP"
 _LBRACKET = "LBRACKET"
 _RBRACKET = "RBRACKET"
 _TRUE = "TRUE"
@@ -55,6 +56,8 @@ class Lexer:
                 tokens.append(Token(_MUL))
             elif self.cur_char == "/":
                 tokens.append(Token(_DIV))
+            elif self.cur_char == "^":
+                tokens.append(Token(_EXP))
             elif self.cur_char == "=":
                 tokens.append(Token(_EQUAL))
             elif self.cur_char == "(":

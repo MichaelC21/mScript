@@ -8,6 +8,7 @@ _MUL = "MUL"
 _DIV = "DIV" 
 _LBRACKET = "LBRACKET"
 _RBRACKET = "RBRACKET"
+_EXP = "EXP"
 _TRUE = "TRUE"
 _FALSE = "FALSE"
 _IDENTIFIER = "IDENTIFIER" 
@@ -83,6 +84,14 @@ class Parser:
             self.cur_token = self.tokens[self.pos]
             self.stack.append(self.cur_token)
     
+    def power(self):
+        left = self.atom()
+        while self.cur_token.type in (_EXP):
+            op = self.cur_token
+            self.next()
+            right, err = self.factor()
+            left = BinaryNode(left,op,right)
+        return left
     '''
     Purpose: The highest precedence grammar, responsible for handling digits, 
     unary operations, and brackets
@@ -99,21 +108,8 @@ class Parser:
             if not factor:
                 return [], IllegalSyntaxError()
             return UnaryNode(token, factor)   
-        elif token.type in (_INT, _FLOAT):     #if digit
-            self.next()
-            return DigitNode(token)
-        elif token.type == _LBRACKET:   #if brackets are involved
-            self.next()
-            expr, err = self.expression()   #get the expression inside
-            if err:
-                return [], err
-            if self.cur_token.type  == _RBRACKET:  #check for closing
-                self.next()
-                return expr
-            else:
-                return [], IllegalSyntaxError()
-        else:
-            return None
+        
+        return self.power()
     '''
     Purpose: The second highest precedence grammar, responsible for handling * and / operations
     Parameters: N/A
@@ -172,7 +168,23 @@ class Parser:
 
         
         return left, None
-
+    
+    def atom(self):
+        token = self.cur_token
+        if token.type in (_INT, _FLOAT):     #if digit
+            self.next()
+            return DigitNode(token)
+        elif token.type == _LBRACKET:   #if brackets are involved
+            self.next()
+            expr, err = self.expression()   #get the expression inside
+            if err:
+                return [], err
+            if self.cur_token.type  == _RBRACKET:  #check for closing
+                self.next()
+                return expr, None
+            else:
+                return [], IllegalSyntaxError()
+        return [], IllegalSyntaxError()
 '''
 Purpose: Takes a given string tokenizes it then parses it. 
 Parameters: text: String
